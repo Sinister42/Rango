@@ -1,11 +1,12 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from rango.models import Category,Page
 
 def index(request):
 	#"-likes" - decreasing order [:5] - up to five
     category_list = Category.objects.order_by("-likes")[:5]
-    context_dict = {'categories' : category_list}
+    page_list = Page.objects.order_by("-views")[:5]
+    context_dict = {'categories' : category_list, 'pages' : page_list}
     return render(request, 'rango/index.html', context=context_dict)
 	
 def about(request):
@@ -20,6 +21,7 @@ def show_category(request, category_name_slug):
 		context_dict["pages"] = pages
 		context_dict["category"] = category
 	except Category.DoesNotExist:
+		raise Http404("Category does not exist!")
 		context_dict["category"] = None
 		context_dict["pages"] = None
 	return render(request, "rango/category.html", context_dict)
