@@ -3,3 +3,5 @@ db.sqlite3
 rango/migrations/**
 rango/__pycache__/**
 rango_django/__pycache__/**
+WebhoseAPI.txt
+*.key

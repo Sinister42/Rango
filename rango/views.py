@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from datetime import datetime
+from rango.webhose_search import run_query
 
 def index(request):
 	#"-likes" - decreasing order [:5] - up to five
@@ -136,7 +137,17 @@ def user_login(request):
 			return render(request, 'rango/login.html', {'attempted' : True})
 	else:
 		return render(request, 'rango/login.html', {'attempted' : False})
-			
+
+def search(request):
+	result_list = []
+	query_human = ""
+	if request.method == 'POST':
+		query_human = request.POST['query']
+		query = query_human.strip()
+		if query:
+			result_list = run_query(query)
+	return render(request, 'rango/search.html', {'result_list' : result_list, 'query_human':query_human})
+		
 @login_required
 def restricted(request):
 	return render(request, 'rango/restricted.html', {})
